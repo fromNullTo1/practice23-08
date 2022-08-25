@@ -23,22 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
     let trashes;
     
     
-    buildList(movieDB.movies, promoMovieList);
+    
 
     form.addEventListener('submit',e => {
         e.preventDefault();
-        let movie = input.value[0].toUpperCase() + input.value.toLowerCase().slice(1);
+        
+        if (!input.value) {
+            console.log('enter something');
+        } else {
+            let movie = input.value[0].toUpperCase() + input.value.toLowerCase().slice(1);
         if (movie.length > 21) {
             movie = movie.slice(0,21) + '...';
         }
         movieDB.movies.push(movie);
-        console.log(movieDB.movies); 
-        console.log(inputCheck.checked);
+        sortArr(movieDB.movies);
         if (inputCheck.checked) {
             console.log('fav movie');
         }   
-        form.reset();
+        e.target.reset();
         buildList(movieDB.movies, promoMovieList);
+
+        }
     })
     
     
@@ -48,13 +53,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    deleteAdv(promoAdv);
-   
-    promoGenre.textContent = 'драма';
-    promoBg.style.backgroundImage = 'url(img/bg.jpg)';
-
-    const makeChanges = () =>
     
+       
+    const makeChanges = () => {
+        promoGenre.textContent = 'драма';
+        promoBg.style.backgroundImage = 'url(img/bg.jpg)';
+    }
+    
+    
+
+    const sortArr = arr => {
+        arr.sort();
+    }
+
+    sortArr(movieDB.movies);
+
     // function buildList() {
     //     promoMovieList.innerHTML = '';
     //     movieDB.movies.sort();
@@ -76,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function buildList(arr, parent) {
         parent.innerHTML = '';
-        arr.sort();
+        sortArr(arr);
         arr.forEach((e, i) => {
             parent.innerHTML += `    
             <li class="promo__interactive-item">${i+1}. ${e}
@@ -88,12 +101,14 @@ document.addEventListener('DOMContentLoaded', () => {
         trashes.forEach((trash, i) => {
             trash.addEventListener('click', () => {
                 arr.splice(i, 1);
-                buildList(movieDB.movies, promoMovieList);
+                buildList(arr, parent);
             });
         });    
     }
-    
 
+    deleteAdv(promoAdv);
+    makeChanges();
+    buildList(movieDB.movies, promoMovieList);
 
 });
 
